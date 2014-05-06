@@ -8,11 +8,19 @@ function makeArray($count = 10){
 	return $arr;
 }
 
-function printArray(Array $arr){
-	foreach($arr as $key => $value){
-		echo '------';
-	}
-	echo "\r\n";
+
+function printDashedLine($arr){
+    foreach($arr as $key => $value){
+            echo '------';
+    }
+    echo "\r\n";
+}
+
+function printArray(Array $arr,$title=''){
+        printDashedLine($arr);
+        echo "| $title";
+        echo "\r\n";
+        printDashedLine($arr);
 	
 	foreach($arr as $key => $value){
 		echo '|';
@@ -26,58 +34,38 @@ function printArray(Array $arr){
 	}
 	echo "| \r\n";
 
-	foreach($arr as $key => $value){
-		echo '------';
-	}
-	echo "\r\n";
-
+	printDashedLine($arr);
+        echo "\r\n";
 }
 
 function printNumber($num){
 	$str = str_pad($num,5,' ');
 	echo $str;
-
-	/*if($num < 10)
-		echo "   $num ";
-	if($num >= 10 && $num < 100)
-		echo "  $num ";
-	if($num >=
-	 */
 }
-
-
-
-
-
 
 
 //Insertion Sort
-function insertionSort(Array $arr){
+function insertionSort(Array &$arr){
 	$n = count($arr);
 	for($i=1;$i <= $n-1; $i++){ //start at 1 instead of zero because the first element is already sorted
 		//		echo $arr[$i] . PHP_EOL;
-		$arr = insert($arr,$i,$arr[$i]);		
+		insert($arr,$i,$arr[$i]);		
 	}
-
-	echo 'VVV end of insertionSort()' . PHP_EOL;
-	printArray($arr);
-	return $arr;
-
-
+	return;
 }
 
-function insert($arr, $pos, $value){
+function insert(&$arr, $pos, $value){
 
-	echo "pos: $pos value $value" . PHP_EOL;
+//	echo "pos: $pos value $value" . PHP_EOL;
 	$i = $pos - 1;
 	while($i>=0 and $arr[$i] > $value){
 		$arr[$i+1] = $arr[$i];
 		$i = $i-1;
-		echo 'while loop ' . "i: $i value: $value" .PHP_EOL;
+//		echo 'while loop ' . "i: $i value: $value" .PHP_EOL;
 	}
 	$arr[$i+1] = $value;
-	printArray($arr);
-	return $arr;
+	//printArray($arr);
+	return;
 }
 
 
@@ -148,18 +136,49 @@ function swap(&$arr, $index_a, $index_b){
 }
 
 
+function QuickSort(&$arr){
+    doQuickSort($arr, 0, count($arr)-1);
+}
+
+function doQuickSort(&$arr,$left_index, $right_index){
+    if($left_index < $right_index){
+        $pivot_index = partition($arr,$left_index,$right_index);
+        doQuickSort($arr, $left_index, $pivot_index-1);
+        doQuickSort($arr,$pivot_index + 1, $right_index);
+    }
+}
+
+
+function partition(&$arr,$left_index,$right_index){
+    $pivot_index = rand($left_index,$right_index);
+    $store = $left_index;
+    swap($arr,$right_index,$pivot_index);
+    
+    for($i=$left_index;$i<$right_index;$i++){
+        if($arr[$i] <= $arr[$right_index]){
+            swap($arr,$i,$store);
+            $store++;
+        }
+    }
+    swap($arr,$right_index,$store);
+    return $store;
+}
 
 
 
 
-$arr = makeArray(20);
-printArray($arr);
+
+$arr = makeArray(10);
+printArray($arr, 'initial array');
+
 shuffle($arr);
-printArray($arr);
+printArray($arr, 'shuffled array');
 
-echo '^^^ shuffled array ' . PHP_EOL;
 medianSort($arr);
+printArray($arr,'median sorted array');
 
 //$arr = insertionSort($arr);
-printArray($arr);
+QuickSort($arr);
+printArray($arr, 'Quicksorted array');
+
 //var_dump(makeArray());
